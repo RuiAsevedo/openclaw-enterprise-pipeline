@@ -21,11 +21,22 @@ O ecossistema de autonomia baseia-se na integração sinérgica das seguintes te
 | **Automation** | Chromium (Headless) | Navegação e interação com o DOM para validação de licenças |
 | **Persistence** | Systemd Service | Gerenciamento de daemon para alta disponibilidade do sistema |
 
-### 4. Metodologia de Autonomia
-O agente opera sob uma política de segurança **Full Autonomy (Mode: Allow)**, permitindo a execução de comandos de nível administrativo (`sudo`) sem intervenção humana para:
-* Provisionamento dinâmico de dependências (instalação de pacotes).
-* Gestão de sistemas de arquivos e limpeza de diretórios temporários.
-* Roteamento de requisições através de proxies de navegação internos.
+### 4. Metodologia de Autonomia e Governança
+
+O agente opera sob um modelo de **autonomia supervisionada**: execução autônoma para tarefas de baixo risco
+(leitura de dados, curadoria de conteúdo, ETL de mídia), mas com **aprovação humana obrigatória** antes de
+qualquer ação privilegiada de sistema.
+
+Para comandos que exigem permissão de superusuário (`sudo`) — como provisionamento de dependências ou
+gestão de sistema de arquivos — o agente é instruído a:
+
+1. Explicar a ação que pretende executar e por que ela é necessária.
+2. Descrever os riscos envolvidos (o que pode dar errado, reversibilidade da ação).
+3. Descrever o benefício esperado.
+4. Aguardar confirmação explícita antes de prosseguir.
+
+Esse modelo de governança permitiu validar o pipeline com segurança durante o período de testes na VM,
+sem abrir mão de supervisão sobre ações de maior impacto no sistema.
 
 ### 5. Casos de Uso
 O projeto foca na validação da autonomia de agentes em tarefas de:
